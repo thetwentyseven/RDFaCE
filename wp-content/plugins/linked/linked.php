@@ -66,20 +66,35 @@ add_action('admin_menu', 'linked_options_page');
 
 
 
-// Add new buttons for TinyMCE
-add_filter( 'mce_buttons', 'linked_register_buttons' );
+add_action( 'admin_head', 'fb_add_tinymce' );
+function fb_add_tinymce() {
+    global $typenow;
 
-function linked_register_buttons( $buttons ) {
-   array_push( $buttons, 'separator', 'linked' );
-   return $buttons;
+    // Only on Post Type: post and page
+    if( ! in_array( $typenow, array( 'post', 'page' ) ) )
+        return ;
+
+    add_filter( 'mce_external_plugins', 'fb_add_tinymce_plugin' );
+    // Add to line 1 form WP TinyMCE
+    add_filter( 'mce_buttons', 'fb_add_tinymce_button' );
 }
 
-// Load the TinyMCE plugin : editor_plugin.js (wp2.5)
-add_filter( 'mce_external_plugins', 'linked_register_tinymce_javascript' );
+// Inlcude the JS for TinyMCE
+function fb_add_tinymce_plugin( $plugin_array ) {
 
-function linked_register_tinymce_javascript( $plugin_array ) {
-   $plugin_array['linked'] = plugins_url( '/public/js/tinymce/plugins/linked/plugin.js',__FILE__ );
-   return $plugin_array;
+    $plugin_array['fb_test'] = plugins_url( '/public/js/tinymce/plugins/linked/plugin.js',__FILE__ );
+    // Print all plugin JS path
+    var_dump( $plugin_array );
+    return $plugin_array;
+}
+
+// Add the button key for address via JS
+function fb_add_tinymce_button( $buttons ) {
+
+    array_push( $buttons, 'fb_test_button_key' );
+    // Print all buttons
+    var_dump( $buttons );
+    return $buttons;
 }
 
 
