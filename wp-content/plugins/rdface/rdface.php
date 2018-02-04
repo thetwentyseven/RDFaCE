@@ -23,7 +23,7 @@ function fb_add_tinymce() {
         return ;
 
     wp_enqueue_script('jquery');
-  	wp_enqueue_script('myscript3', WP_PLUGIN_URL . '/rdface/mce/rdface/libs/jstree/_lib/jquery.cookie.js');
+  	wp_enqueue_script('rdface-cookie', WP_PLUGIN_URL . '/rdface/mce/rdface/libs/jstree/_lib/jquery.cookie.js');
 
     add_filter( 'mce_external_plugins', 'fb_add_tinymce_plugin' );
     // Add to line 1 form WP TinyMCE
@@ -49,6 +49,8 @@ function fb_add_tinymce_button( $buttons ) {
     //var_dump( $buttons );
     return $buttons;
 }
+
+// Style
 function my_change_mce_options( $init ) {
 
 	$init['valid_elements'] = '*[*]';
