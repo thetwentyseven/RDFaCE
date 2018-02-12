@@ -1,30 +1,44 @@
-// Plugin for TinyMCE
+// JavaScript file for TinyMCE Linked Plugin
 //
 //
 //
 ( function() {
-    tinymce.PluginManager.add( 'fb_test', function( editor, url ) {
+    tinymce.PluginManager.add( 'linked', function( editor, url ) {
 
         // Add a button that opens a window
-        editor.addButton( 'fb_test_button_key', {
-
-            text: 'FB Test Button',
+        editor.addButton( 'linked_button_key', {
+            // Button name and icon
+            text: 'Semantic Notation',
             icon: false,
+            // Button fnctionality
             onclick: function() {
-                // Open window
-                editor.windowManager.open( {
-                    title: 'Example plugin',
-                    body: [{
-                        type: 'textbox',
-                        name: 'title',
-                        label: 'Title'
-                    }],
-                    onsubmit: function( e ) {
-                        // Insert content when the window form is submitted
-                        editor.insertContent( 'Title: ' + e.data.title );
-                    }
 
-                } );
+              // var content = editor.selection.select(editor.getBody(), true);
+              var content = tinymce.activeEditor.getContent({format: 'text'});
+              console.log(content);
+              UserRequest(content);
+
+              function UserRequest(content) {
+
+                  var xhttp = new XMLHttpRequest();
+                  xhttp.open("POST", "https://api.textrazor.com/text=" + content, true);
+                  console.log(content);
+                  console.log("https://api.textrazor.com/text=" + content);
+                  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                  xhttp.setRequestHeader("X-TextRazor-Key", "6e3a64e825ce0eab60fe3801e190d41ea2794f245a61b4df315aa6b1");
+                  xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+                  xhttp.setRequestHeader('Accept-Encoding', 'gzip');
+                  xhttp.send();
+                  console.log(xhttp.responseText);
+                  // var response = JSON.parse(xhttp.responseText);
+              }
+
+
+
+
+
+
+
             }
 
         } );
