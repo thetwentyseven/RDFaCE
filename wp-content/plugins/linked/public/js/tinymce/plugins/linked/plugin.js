@@ -13,36 +13,33 @@
             // Button fnctionality
             onclick: function() {
 
-              // var content = editor.selection.select(editor.getBody(), true);
-              var content = tinymce.activeEditor.getContent({format: 'text'});
-              console.log(content);
-              UserRequest(content);
+              // get raw text to variable content
+              // More information on http://archive.tinymce.com/wiki.php/api4:method.tinymce.Editor.getContent
+              var content = tinymce.activeEditor.getContent();
 
-              function UserRequest(content) {
-
-                  var xhttp = new XMLHttpRequest();
-                  xhttp.open("POST", "https://api.textrazor.com/text=" + content, true);
-                  console.log(content);
-                  console.log("https://api.textrazor.com/text=" + content);
-                  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                  xhttp.setRequestHeader("X-TextRazor-Key", "6e3a64e825ce0eab60fe3801e190d41ea2794f245a61b4df315aa6b1");
-                  xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
-                  xhttp.setRequestHeader('Accept-Encoding', 'gzip');
-                  xhttp.send();
-                  console.log(xhttp.responseText);
-                  // var response = JSON.parse(xhttp.responseText);
-              }
-
-
-
-
+              // using jQuery ajax
+              // send the text to textrazor API with PHP
+              $.ajax({
+                type: 'POST',
+                url: ajax_object.ajax_url,
+                data: { 'action': 'send_text',
+                    	  'content': ajax_object.content = content
+                       },
+                beforeSend: function() {
+                  console.log('before send..');
+                 },
+                success: function(response){
+                  // console.log(response);
+                  // Sets the raw contents of the activeEditor editor. More info - https://www.tinymce.com/docs/api/tinymce/tinymce.editor/#setcontent
+                  tinymce.activeEditor.setContent(response, {format: 'text'});
+                }
+              });
 
 
+            } // onclick function
 
-            }
+        } ); // TinyMCE button
 
-        } );
+    } ); // tinymce.PluginManager
 
-    } );
-
-} )();
+} )(); // function

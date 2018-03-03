@@ -1,0 +1,117 @@
+/*
+LINKED Plugin official CSS
+*/
+
+.wpLinkedToolTip {
+  display: inline;
+  position: relative;
+  z-index: 999;
+}
+
+.wpLinkedToolTipItem{
+  background: #007acc3b;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 700;
+  padding: 0 10px;
+}
+
+.wpLinkedToolTip:hover .wpLinkedToolTipContent {
+    pointer-events: auto;
+    opacity: 1;
+    -webkit-transform: translate3d(0,0,0) rotate3d(0,0,0,0);
+    transform: translate3d(0,0,0) rotate3d(0,0,0,0);
+}
+
+.wpLinkedToolTipContent::after {
+    content: '';
+    top: 100%;
+    left: 50%;
+    border: solid transparent;
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+    border-color: transparent;
+    border-top-color: #2a3035;
+    border-width: 10px;
+    margin-left: -10px;
+}
+
+.wpLinkedToolTipItem::after {
+    content: '';
+    position: absolute;
+    width: 360px;
+    height: 20px;
+    bottom: 100%;
+    left: 50%;
+    pointer-events: none;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+  }
+
+.clearfix:after {
+    clear: both;
+}
+
+.wpLinkedToolTip:hover .wpLinkedToolTipItem::after {
+    pointer-events: auto;
+}
+
+.wpLinkedToolTipImage {
+  position: relative;
+  height: 170px;
+  width: 130px;
+  display: block;
+  float: left;
+  margin-right: 1em;
+  background: #ece7e7;
+}
+
+.wpLinkedToolTipItemFooter{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0.5rem;
+    background: #007acc;
+    font-size: 0.7rem;
+}
+
+.wpLinkedToolTipItemConfidence{float: right;}
+.wpLinkedToolTipItemSource a{color: #fff;}
+.wpLinkedToolTipItemSource a:hover{color: #fff;}
+.wpLinkedToolTipItemSource a:visited{color: #fff;}
+.wpLinkedToolTipItemSource a:active{color: #fff;}
+
+.tooltip-effect-1 .wpLinkedToolTipContent {
+    -webkit-transform: translate3d(0,-10px,0);
+    transform: translate3d(0,-10px,0);
+    -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.wpLinkedToolTipContent {
+  position: absolute;
+  z-index: 9999;
+  width: 360px;
+  left: 50%;
+  margin: 0 0 20px -180px;
+  bottom: 100%;
+  text-align: left;
+  font-size: 0.765em;
+  line-height: 1.4;
+  box-shadow: -5px -5px 15px rgba(48,54,61,0.2);
+  background: #2a3035;
+  opacity: 0;
+  cursor: default;
+  pointer-events: none;
+}
+
+.wpLinkedToolTipItemText{
+  font-size: 0.9rem;
+  line-height: 1.35;
+  display: block;
+  padding: 1em 0em 0em 0em;
+  color: #fff;
+}

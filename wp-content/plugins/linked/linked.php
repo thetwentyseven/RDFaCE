@@ -28,12 +28,15 @@ You should have received a copy of the GNU General Public License
 along with Linked. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
 
+// Create global instances
+define( 'LINKED_PLUGIN', __FILE__ );
+define( 'LINKED_PLUGIN_DIR', untrailingslashit( dirname( LINKED_PLUGIN ) ) );
 
 
-// Create top-level menu
+
+// Create top-level in admin menu
 add_action('admin_menu', 'linked_options_page');
-function linked_options_page()
-{
+function linked_options_page(){
     add_menu_page(
         'Linked: Semantic Web & WordPress Plugin',
         'Linked Options',
@@ -46,25 +49,16 @@ function linked_options_page()
 }
 
 // Information admin page
-function linked_options_page_html()
-{
+function linked_options_page_html(){
     // Check user capabilities
     if (!current_user_can('manage_options')) {
         return;
     }
-    ?>
-    <div class="admin-linked">
-        <h1><?= esc_html(get_admin_page_title()); ?></h1>
-        <h2>Documentation of Linked Plugin</h2>
 
-    </div>
-    <?php
+    require_once LINKED_PLUGIN_DIR . '/admin/view.php';
+
+
 }
-
-
-
-
-
 
 
 // Adding a new tinymce button with 'mce_buttons' filter and his JS plugin with 'mce_external_plugins' filter
@@ -93,10 +87,42 @@ function linked_tinymce_button( $buttons ) {
 }
 
 
+// Enqueue files for the plugin to manage data via AJAX.
+// Just enqueue for the admin panel - More info: https://codex.wordpress.org/Plugin_API/Action_Reference/admin_enqueue_scripts
+add_action( 'admin_enqueue_scripts', 'linked_admin_enqueue' );
+function linked_admin_enqueue() {
+
+  // Register JavaScript
+  wp_register_script( 'linked-plugin-script', null);
+  wp_enqueue_script( 'linked-plugin-script');
+
+	// in JavaScript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
+	wp_localize_script( 'linked-plugin-script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ),
+                                                                    'content' => '',
+                                                                    'api' => '')
+                                                                  );
+}
 
 
+// These files would be reflected within the TinyMCE visual editor
+// More info: https://developer.wordpress.org/reference/functions/add_editor_style/
+add_action( 'admin_init', 'wpdocs_theme_add_editor_styles' );
+function wpdocs_theme_add_editor_styles() {
+    add_editor_style( plugins_url( '/public/css/style.css', __FILE__ )  );
+}
 
 
+// Enqueue the files for the frontend
+// More info: https://codex.wordpress.org/Plugin_API/Action_Reference/wp_enqueue_scripts
+add_action( 'wp_enqueue_scripts', 'linked_frontend_enqueue' );
+function linked_frontend_enqueue() {
 
+  wp_register_style( 'linked-plugin-style', plugins_url( '/public/css/style.css', __FILE__ ) );
+  wp_enqueue_style( 'linked-plugin-style' );
+}
+
+
+// Include the settings page with all the files required
+require_once LINKED_PLUGIN_DIR . '/settings.php';
 
 ?>
