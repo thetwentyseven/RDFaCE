@@ -59,12 +59,57 @@ function send_text() {
   if (isset($response['response']['entities'])) {
       foreach ($response['response']['entities'] as $entity) {
         if ($entity['confidenceScore'] >= $confidence) {
-          // Replace the actual text from TinyMCE with those words found with TextRazor and make a link
-          $tinymce_after = str_replace($entity['matchedText'], "<span class='wpLinkedToolTip tooltip-effect-1'><span class='wpLinkedToolTipItem'>{$entity['matchedText']}</span><span class='wpLinkedToolTipContent clearfix'><span class='wpLinkedToolTipImage'><img src='img/none.png'></span><span class='wpLinkedToolTipItemText'>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<span class='wpLinkedToolTipItemFooter'><span class='wpLinkedToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$entity['wikidataId']}'>Wikidata</a></span> <span class='wpLinkedToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
-        }
-      }
-  }
+
+          // Call the Wikidata API to get the description and the image if it has one - More info: https://www.mediawiki.org/wiki/Wikibase/API#wbgetentities
+          $wikidataid = $entity['wikidataId'];
+          $request = wp_remote_get( "https://www.wikidata.org/w/api.php?action=wbgetentities&ids={$wikidataid}&languages=en&format=json" );
+
+          if( !is_wp_error( $request ) ) {
+            // Get simply the body of the call
+            $body = wp_remote_retrieve_body( $request );
+            // Transform it in json code or object
+            $data = json_decode( $body );
+            // Get only the description of the wikidata entity
+            $description = $data->entities->$wikidataid->descriptions->en->value;
+            // Make a string's first character uppercase
+            $description = ucfirst($description);
+            // Get only the image name of the wikidata entity
+            $imagename = $data->entities->$wikidataid->claims->P18[0]->mainsnak->datavalue->value;
+            // Convert spaces in string into +
+            $imagename = str_replace(' ', '+', $imagename);
+            print('::Image Name::::');
+            print($imagename);
+            print('::::::');
+            $request_image = wp_remote_get( "https://commons.wikimedia.org/w/api.php?action=query&titles=File%3A{$imagename}&prop=imageinfo&iiprop=url&iiurlwidth=130&format=json" );
+
+            if( !is_wp_error( $request_image ) ) {
+              // Get simply the body of the call
+              $body = wp_remote_retrieve_body( $request );
+              // Transform it in json code or object
+              $data = json_decode( $body );
+              // Get image url
+              $imageurl = $data->query->pages{0}->imageinfo[0]->thumburl;
+              print('...Image URL: ');
+              print($imageurl);
+
+            } else {
+              $imageurl = plugins_url( 'linked/public/images/image-not-available.jpg' );
+            }
+
+
+            // Set an unknown image if is not found in Wikidata
+
+            // Replace the actual text from TinyMCE with those words found with TextRazor and make a link
+            // $tinymce_after = str_replace($entity['matchedText'], "<span class='wpLinkedToolTip tooltip-effect-1'><span class='wpLinkedToolTipItem'>{$entity['matchedText']}</span><span class='wpLinkedToolTipContent clearfix'><span class='wpLinkedToolTipImage'><img src='{$imageurl}'></span><span class='wpLinkedToolTipItemText'>{$description}<span class='wpLinkedToolTipItemFooter'><span class='wpLinkedToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpLinkedToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
+          } // if $request
+
+        } // if $entity['confidenceScore']
+      } // foreach
+  } // if $response['response']['entities']
+
   // Return the text clean, Un-quotes a quoted string - More info http://php.net/manual/en/function.stripslashes.php
+  // Checking size of the string
+  // print(strlen($tinymce_after));
   print(stripslashes($tinymce_after));
 
 	wp_die();

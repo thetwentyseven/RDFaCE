@@ -13,7 +13,7 @@
             // Button fnctionality
             onclick: function() {
 
-              // get raw text to variable content
+              // Get text to variable content
               // More information on http://archive.tinymce.com/wiki.php/api4:method.tinymce.Editor.getContent
               var content = tinymce.activeEditor.getContent();
 
@@ -26,12 +26,12 @@
                     	  'content': ajax_object.content = content
                        },
                 beforeSend: function() {
-                  console.log('before send..');
+                  console.log('Sending...');
                  },
                 success: function(response){
-                  // console.log(response);
-                  // Sets the raw contents of the activeEditor editor. More info - https://www.tinymce.com/docs/api/tinymce/tinymce.editor/#setcontent
-                  tinymce.activeEditor.setContent(response, {format: 'text'});
+                  console.log(response);
+                  // Sets the contents of the activeEditor editor. More info - https://www.tinymce.com/docs/api/tinymce/tinymce.editor/#setcontent
+                  // tinymce.activeEditor.setContent(response, {format: 'text'});
                 }
               });
 
