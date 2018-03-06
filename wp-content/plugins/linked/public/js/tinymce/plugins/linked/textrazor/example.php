@@ -77,30 +77,29 @@ function send_text() {
             $imagename = $data->entities->$wikidataid->claims->P18[0]->mainsnak->datavalue->value;
             // Convert spaces in string into +
             $imagename = str_replace(' ', '+', $imagename);
-            print('::Image Name::::');
-            print($imagename);
-            print('::::::');
+            // Call the Wikidata API: Imageinfo - More info: https://www.mediawiki.org/wiki/API:Imageinfo
             $request_image = wp_remote_get( "https://commons.wikimedia.org/w/api.php?action=query&titles=File%3A{$imagename}&prop=imageinfo&iiprop=url&iiurlwidth=130&format=json" );
 
+            // If there is no image, use the predetermined
             if( !is_wp_error( $request_image ) ) {
               // Get simply the body of the call
-              $body = wp_remote_retrieve_body( $request );
+              $body = wp_remote_retrieve_body( $request_image );
               // Transform it in json code or object
               $data = json_decode( $body );
               // Get image url
-              $imageurl = $data->query->pages{0}->imageinfo[0]->thumburl;
-              print('...Image URL: ');
-              print($imageurl);
+              // More info: https://stackoverflow.com/questions/49119476/getting-first-object-from-a-json-file/49120012#49120012
+              // Because we do not know the 'pageid' element, we get the first element of 'pages'
+              $props = array_values(get_object_vars($data->query->pages));
+              $imageurl = $props[0]->imageinfo[0]->thumburl;
 
-            } else {
+            }
+
+            if (empty($imageurl)) {
               $imageurl = plugins_url( 'linked/public/images/image-not-available.jpg' );
             }
 
-
-            // Set an unknown image if is not found in Wikidata
-
             // Replace the actual text from TinyMCE with those words found with TextRazor and make a link
-            // $tinymce_after = str_replace($entity['matchedText'], "<span class='wpLinkedToolTip tooltip-effect-1'><span class='wpLinkedToolTipItem'>{$entity['matchedText']}</span><span class='wpLinkedToolTipContent clearfix'><span class='wpLinkedToolTipImage'><img src='{$imageurl}'></span><span class='wpLinkedToolTipItemText'>{$description}<span class='wpLinkedToolTipItemFooter'><span class='wpLinkedToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpLinkedToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
+            $tinymce_after = str_replace($entity['matchedText'], "<span class='wpLinkedToolTip tooltip-effect-1'><span class='wpLinkedToolTipItem'>{$entity['matchedText']}</span><span class='wpLinkedToolTipContent clearfix'><span class='wpLinkedToolTipImage'><img src='{$imageurl}'></span><span class='wpLinkedToolTipItemText'>{$description}<span class='wpLinkedToolTipItemFooter'><span class='wpLinkedToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpLinkedToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
           } // if $request
 
         } // if $entity['confidenceScore']

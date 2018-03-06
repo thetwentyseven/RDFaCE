@@ -29,9 +29,10 @@
                   console.log('Sending...');
                  },
                 success: function(response){
-                  console.log(response);
+                  // console.log(response);
                   // Sets the contents of the activeEditor editor. More info - https://www.tinymce.com/docs/api/tinymce/tinymce.editor/#setcontent
-                  // tinymce.activeEditor.setContent(response, {format: 'text'});
+                  tinymce.activeEditor.setContent(response, {format: 'text'});
+                  console.log('Call finished.')
                 }
               });
 

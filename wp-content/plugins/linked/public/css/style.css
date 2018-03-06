@@ -84,6 +84,10 @@ LINKED Plugin official CSS
 .wpLinkedToolTipItemSource a:visited{color: #fff;}
 .wpLinkedToolTipItemSource a:active{color: #fff;}
 
+.wpLinkedToolTipItemSource, .wpLinkedToolTipItemConfidence{
+    padding: 0rem 0.4rem;
+}
+
 .tooltip-effect-1 .wpLinkedToolTipContent {
     -webkit-transform: translate3d(0,-10px,0);
     transform: translate3d(0,-10px,0);
@@ -112,6 +116,6 @@ LINKED Plugin official CSS
   font-size: 0.9rem;
   line-height: 1.35;
   display: block;
-  padding: 1em 0em 0em 0em;
+  padding: 1rem;
   color: #fff;
 }
