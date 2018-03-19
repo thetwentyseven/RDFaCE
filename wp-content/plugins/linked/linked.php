@@ -33,31 +33,53 @@ define( 'LINKED_PLUGIN', __FILE__ );
 define( 'LINKED_PLUGIN_DIR', untrailingslashit( dirname( LINKED_PLUGIN ) ) );
 
 
+add_action( 'admin_init', 'linked_settings_init' );
+function linked_settings_init() {
+   // register a new setting for "linked" page
+   register_setting( 'linked_options_menu', 'linked_options_data' );
 
-// Create top-level in admin menu
-add_action('admin_menu', 'linked_options_page');
-function linked_options_page(){
-    add_menu_page(
-        'Linked: Semantic Web & WordPress Plugin',
-        'Linked Options',
-        'manage_options',
-        'linked',
-        'linked_options_page_html',
-        'dashicons-share',
-        30
-    );
+   // register a group
+   add_settings_section( 'linked_options_id', __( 'Configuration', 'linked_options_menu' ), 'setting_section_callback', 'linked_options_menu' );
+
+   // add fields
+   add_settings_field('linked_options_apikey', __( 'Add action API Key: ', 'linked_options_menu' ), 'setting_apikey_callback', 'linked_options_menu', 'linked_options_id');
+
+   add_settings_field('linked_options_confidence', __( 'Confidence: ', 'linked_options_menu' ), 'setting_confidence_callback', 'linked_options_menu', 'linked_options_id');
+
 }
 
-// Information admin page
-function linked_options_page_html(){
+
+// Create top-level in admin menu
+add_action('admin_menu', 'linked_options_admin_page');
+function linked_options_admin_page(){
+    add_menu_page(
+        'Linked: Semantic Web & WordPress Plugin', // $page_title
+        'Linked Options', // $menu_title
+        'manage_options', // $capability
+        'linked_options_menu', // $menu_slug. The slug name to refer to this menu by. Should be unique for this menu page.
+        'linked_options_admin_page_content', // $function. The function to be called to output the content for this page
+        'dashicons-share', // $icon_url
+        30 // $position
+    );
+
+}
+
+
+// Settings API, display for admin users in the panel admin
+function linked_options_admin_page_content(){
     // Check user capabilities
     if (!current_user_can('manage_options')) {
         return;
     }
+    if ( isset( $_GET['settings-updated'] ) ) {
+    // add settings saved message with the class of "updated"
+    add_settings_error( 'linked_messages', 'linked_message', __( 'Settings Saved', 'linked_options_menu' ), 'updated' );
+    }
+
+    // show error/update messages
+    settings_errors( 'linked_messages' );
 
     require_once LINKED_PLUGIN_DIR . '/admin/view.php';
-
-
 }
 
 
@@ -88,7 +110,7 @@ function linked_tinymce_button( $buttons ) {
 
 
 // Enqueue files for the plugin to manage data via AJAX.
-// Just enqueue for the admin panel - More info: https://codex.wordpress.org/Plugin_API/Action_Reference/admin_enqueue_scripts
+// 'admin_enqueue_scripts' Just enqueue for the admin panel - More info: https://codex.wordpress.org/Plugin_API/Action_Reference/admin_enqueue_scripts
 add_action( 'admin_enqueue_scripts', 'linked_admin_enqueue' );
 function linked_admin_enqueue() {
 
@@ -99,6 +121,7 @@ function linked_admin_enqueue() {
 	// in JavaScript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
 	wp_localize_script( 'linked-plugin-script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ),
                                                                     'content' => '',
+                                                                    'highlight' => '',
                                                                     'api' => '')
                                                                   );
 }

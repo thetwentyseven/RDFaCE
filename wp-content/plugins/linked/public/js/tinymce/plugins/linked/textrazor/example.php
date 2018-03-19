@@ -1,20 +1,25 @@
 <?php
+// TODO: Separate the file in different functions
 // TODO:We must put the require in settings.php
 require_once('TextRazor.php');
 
 
-// Handler function - More information: https://codex.wordpress.org/Plugin_API/Action_Reference/wp_ajax_(action)
+// Handler function - More info: https://codex.wordpress.org/Plugin_API/Action_Reference/wp_ajax_(action)
 add_action( 'wp_ajax_send_text', 'send_text' );
 function send_text() {
   global $wpdb;
 
+  // Get data from the database - More info: https://developer.wordpress.org/reference/functions/get_option/
+  $userdata = get_option('linked_options_data');
+  $userdata_apikey = $userdata['linked_options_apikey'];
+  $userdata_confidence = $userdata['linked_options_confidence'];
+
   // Insert API key
-  TextRazorSettings::setApiKey("6e3a64e825ce0eab60fe3801e190d41ea2794f245a61b4df315aa6b1");
+  TextRazorSettings::setApiKey($userdata_apikey);
 
   // Testing account before a call
   $accountManager = new AccountManager();
   // print_r($accountManager->getAccount());
-
 
   // New instance of TextRazor
   $textrazor = new TextRazor();
@@ -25,14 +30,17 @@ function send_text() {
   // Get the content from the post or page edit via AJAX - POST
   $tinymce_before = $_POST['content'];
 
-  // Get the confident level from the user via AJAX - POST
-  $confidence = 1.0;
+  // Get highlight text by user
+  $highlight = $_POST['highlight'];
 
+  // Get the confident level from the user via AJAX - POST
+  // The confidence that TextRazor is correct that this is a valid entity. TextRazor uses an ever increasing number of signals to help spot valid entities, all of which contribute to this score. These include the semantic agreement between the context in the source text and our knowledgebase, compatibility between other entities in the text, compatibility between the expected entity type and context, prior probabilities of having seen this entity across wikipedia and other web datasets. The score ranges from 0.5 to 10, with 10 representing the highest confidence that this is a valid entity - More info: https://www.textrazor.com/docs/php
+  $confidence = $userdata_confidence;
 
   // We do not want to search words that already have a link <a href=''></a> or , <span class=''></span>
   // More info: http://php.net/manual/en/function.strip-tags.php Author: mariusz.tarnaski@wp.pl
   // We get a copy of the content to extract all the html tags and content inside them
-  $text = $tinymce_before;
+  $text = $highlight;
   $invert = TRUE;
   // Without placing any tag, it replace all of them
   $tags =  '<span><a>';
@@ -51,19 +59,23 @@ function send_text() {
   elseif($invert == FALSE) {
     $text = preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text);
   }
-
+  //--------------------------------------------
 
   // Analyze and extract the entities from the text which we extract all the html tags and content inside them
   $response = $textrazor->analyze($text);
 
+  // Checking if the $response has entities
   if (isset($response['response']['entities'])) {
+      // For each entity give me all the data
       foreach ($response['response']['entities'] as $entity) {
+        // If the entity has the minimum confidence stablished by user
         if ($entity['confidenceScore'] >= $confidence) {
 
           // Call the Wikidata API to get the description and the image if it has one - More info: https://www.mediawiki.org/wiki/Wikibase/API#wbgetentities
           $wikidataid = $entity['wikidataId'];
           $request = wp_remote_get( "https://www.wikidata.org/w/api.php?action=wbgetentities&ids={$wikidataid}&languages=en&format=json" );
 
+          // If the request has not an error
           if( !is_wp_error( $request ) ) {
             // Get simply the body of the call
             $body = wp_remote_retrieve_body( $request );
@@ -78,7 +90,7 @@ function send_text() {
             // Convert spaces in string into +
             $imagename = str_replace(' ', '+', $imagename);
             // Call the Wikidata API: Imageinfo - More info: https://www.mediawiki.org/wiki/API:Imageinfo
-            $request_image = wp_remote_get( "https://commons.wikimedia.org/w/api.php?action=query&titles=File%3A{$imagename}&prop=imageinfo&iiprop=url&iiurlwidth=130&format=json" );
+            $request_image = wp_remote_get( "https://commons.wikimedia.org/w/api.php?action=query&titles=File%3A{$imagename}&prop=imageinfo&iiprop=url&iiurlheight=170&format=json" );
 
             // If there is no image, use the predetermined
             if( !is_wp_error( $request_image ) ) {
@@ -91,15 +103,15 @@ function send_text() {
               // Because we do not know the 'pageid' element, we get the first element of 'pages'
               $props = array_values(get_object_vars($data->query->pages));
               $imageurl = $props[0]->imageinfo[0]->thumburl;
-
             }
 
+            // If the image is not available the user a default one
             if (empty($imageurl)) {
               $imageurl = plugins_url( 'linked/public/images/image-not-available.jpg' );
             }
 
             // Replace the actual text from TinyMCE with those words found with TextRazor and make a link
-            $tinymce_after = str_replace($entity['matchedText'], "<span class='wpLinkedToolTip tooltip-effect-1'><span class='wpLinkedToolTipItem'>{$entity['matchedText']}</span><span class='wpLinkedToolTipContent clearfix'><span class='wpLinkedToolTipImage'><img src='{$imageurl}'></span><span class='wpLinkedToolTipItemText'>{$description}<span class='wpLinkedToolTipItemFooter'><span class='wpLinkedToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpLinkedToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
+            $tinymce_after = str_replace($entity['matchedText'], "<span class='wpLinkedToolTip tooltip-effect-1'><span class='wpLinkedToolTipItem'>{$entity['matchedText']}</span><span class='wpLinkedToolTipContent clearfix'><span class='wpLinkedToolTipImage'><img src='{$imageurl}' class='wpLinkedImages'></span><span class='wpLinkedToolTipItemText'>{$description}<span class='wpLinkedToolTipItemFooter'><span class='wpLinkedToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpLinkedToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
           } // if $request
 
         } // if $entity['confidenceScore']
@@ -107,9 +119,15 @@ function send_text() {
   } // if $response['response']['entities']
 
   // Return the text clean, Un-quotes a quoted string - More info http://php.net/manual/en/function.stripslashes.php
-  // Checking size of the string
+  // Checking size of the string, if it is too big fires 500 error. TODO
   // print(strlen($tinymce_after));
-  print(stripslashes($tinymce_after));
+
+  // If the we have not found any entity, we push back the original text
+  if (isset($tinymce_after)) {
+    print(stripslashes($tinymce_after));
+  } else {
+    print(stripslashes($tinymce_before));
+  }
 
 	wp_die();
 }
