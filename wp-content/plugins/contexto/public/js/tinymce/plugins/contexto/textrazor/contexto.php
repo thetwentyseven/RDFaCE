@@ -9,10 +9,11 @@ add_action( 'wp_ajax_send_text', 'send_text' );
 function send_text() {
   global $wpdb;
 
+
   // Get data from the database - More info: https://developer.wordpress.org/reference/functions/get_option/
-  $userdata = get_option('linked_options_data');
-  $userdata_apikey = $userdata['linked_options_apikey'];
-  $userdata_confidence = $userdata['linked_options_confidence'];
+  $userdata = get_option('contexto_options_data');
+  $userdata_apikey = $userdata['contexto_options_apikey'];
+  $userdata_confidence = $userdata['contexto_options_confidence'];
 
   // Insert API key
   TextRazorSettings::setApiKey($userdata_apikey);
@@ -107,11 +108,11 @@ function send_text() {
 
             // If the image is not available the user a default one
             if (empty($imageurl)) {
-              $imageurl = plugins_url( 'linked/public/images/image-not-available.jpg' );
+              $imageurl = plugins_url( 'contexto/public/images/image-not-available.jpg' );
             }
 
             // Replace the actual text from TinyMCE with those words found with TextRazor and make a link
-            $tinymce_after = str_replace($entity['matchedText'], "<span class='wpLinkedToolTip tooltip-effect-1'><span class='wpLinkedToolTipItem'>{$entity['matchedText']}</span><span class='wpLinkedToolTipContent clearfix'><span class='wpLinkedToolTipImage'><img src='{$imageurl}' class='wpLinkedImages'></span><span class='wpLinkedToolTipItemText'>{$description}<span class='wpLinkedToolTipItemFooter'><span class='wpLinkedToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpLinkedToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
+            $tinymce_after = str_replace($entity['matchedText'], "<span class='wpContextoToolTip tooltip-effect-1'><span class='wpContextoToolTipItem'>{$entity['matchedText']}</span><span class='wpContextoToolTipContent clearfix'><span class='wpContextoToolTipImage'><img src='{$imageurl}' class='wpContextoImages'></span><span class='wpContextoToolTipItemText'>{$description}<span class='wpContextoToolTipItemFooter'><span class='wpContextoToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpContextoToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
           } // if $request
 
         } // if $entity['confidenceScore']

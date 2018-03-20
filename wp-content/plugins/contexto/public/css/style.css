@@ -1,21 +1,21 @@
 /*
-LINKED Plugin official CSS
+Contexto Plugin official CSS
 */
 
-img.wpLinkedImages{
+img.wpContextoImages{
   height: 100%;
   width: auto;
   max-width: none;
 }
 
 
-.wpLinkedToolTip {
+.wpContextoToolTip {
   display: inline;
   position: relative;
   z-index: 999;
 }
 
-.wpLinkedToolTipItem{
+.wpContextoToolTipItem{
   background: #007acc3b;
   cursor: pointer;
   display: inline-block;
@@ -23,14 +23,14 @@ img.wpLinkedImages{
   padding: 0 10px;
 }
 
-.wpLinkedToolTip:hover .wpLinkedToolTipContent {
+.wpContextoToolTip:hover .wpContextoToolTipContent {
     pointer-events: auto;
     opacity: 1;
     -webkit-transform: translate3d(0,0,0) rotate3d(0,0,0,0);
     transform: translate3d(0,0,0) rotate3d(0,0,0,0);
 }
 
-.wpLinkedToolTipContent::after {
+.wpContextoToolTipContent::after {
     content: '';
     top: 100%;
     left: 50%;
@@ -45,7 +45,7 @@ img.wpLinkedImages{
     margin-left: -10px;
 }
 
-.wpLinkedToolTipItem::after {
+.wpContextoToolTipItem::after {
     content: '';
     position: absolute;
     width: 360px;
@@ -61,11 +61,11 @@ img.wpLinkedImages{
     clear: both;
 }
 
-.wpLinkedToolTip:hover .wpLinkedToolTipItem::after {
+.wpContextoToolTip:hover .wpContextoToolTipItem::after {
     pointer-events: auto;
 }
 
-.wpLinkedToolTipImage {
+.wpContextoToolTipImage {
   position: relative;
   height: 170px;
   width: 130px;
@@ -75,7 +75,7 @@ img.wpLinkedImages{
   background: #ece7e7;
 }
 
-.wpLinkedToolTipItemFooter{
+.wpContextoToolTipItemFooter{
   position: fixed;
   bottom: 0;
   left: 0;
@@ -85,24 +85,24 @@ img.wpLinkedImages{
   font-size: 0.7rem;
 }
 
-.wpLinkedToolTipItemConfidence{float: right;}
-.wpLinkedToolTipItemSource a{color: #fff;}
-.wpLinkedToolTipItemSource a:hover{color: #fff;}
-.wpLinkedToolTipItemSource a:visited{color: #fff;}
-.wpLinkedToolTipItemSource a:active{color: #fff;}
+.wpContextoToolTipItemConfidence{float: right;}
+.wpContextoToolTipItemSource a{color: #fff;}
+.wpContextoToolTipItemSource a:hover{color: #fff;}
+.wpContextoToolTipItemSource a:visited{color: #fff;}
+.wpContextoToolTipItemSource a:active{color: #fff;}
 
-.wpLinkedToolTipItemSource, .wpLinkedToolTipItemConfidence{
+.wpContextoToolTipItemSource, .wpContextoToolTipItemConfidence{
     padding: 0rem 0.4rem;
 }
 
-.tooltip-effect-1 .wpLinkedToolTipContent {
+.tooltip-effect-1 .wpContextoToolTipContent {
     -webkit-transform: translate3d(0,-10px,0);
     transform: translate3d(0,-10px,0);
     -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
     transition: opacity 0.3s, transform 0.3s;
 }
 
-.wpLinkedToolTipContent {
+.wpContextoToolTipContent {
   position: absolute;
   z-index: 9999;
   width: 360px;
@@ -119,7 +119,7 @@ img.wpLinkedImages{
   pointer-events: none;
 }
 
-.wpLinkedToolTipItemText{
+.wpContextoToolTipItemText{
   position: relative;
   top: 0;
   font-size: 0.9rem;

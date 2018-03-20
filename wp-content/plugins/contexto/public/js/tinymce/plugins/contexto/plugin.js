@@ -1,12 +1,12 @@
-// JavaScript file for TinyMCE Linked Plugin
+// JavaScript file for TinyMCE Contexto Plugin
 
 ( function() {
-    tinymce.PluginManager.add( 'linked', function( editor, url ) {
+    tinymce.PluginManager.add( 'contexto', function( editor, url ) {
 
         // Add a button that opens a window
-        editor.addButton( 'linked_button_key', {
+        editor.addButton( 'contexto_button_key', {
             // Button name and icon
-            text: 'Semantic Notation',
+            text: 'Contexto me!',
             icon: false,
             // Button fnctionality
             onclick: function() {

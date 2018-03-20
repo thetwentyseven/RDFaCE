@@ -4,17 +4,17 @@
 function setting_section_callback(){
 
   $default = array(
-                    "linked_options_apikey" => "6e3a64e825ce0eab61fe3801e190d41ea2794f345a61b4df315aa6b1",
-                    "linked_options_confidence" => "1"
+                    "contexto_options_apikey" => "6e3a64e825ce0eab61fe3801e190d41ea2794f345a61b4df315aa6b1",
+                    "contexto_options_confidence" => "1"
                   );
-  add_option('linked_options_data', $default);
+  add_option('contexto_options_data', $default);
 
 }
 
 // Function to display the API input
 function setting_apikey_callback() {
-	$options = get_option('linked_options_data');
-	echo "<input id='linked_options_apikey' name='linked_options_data[linked_options_apikey]' type='text' value='{$options['linked_options_apikey']}' size='100'/>";
+	$options = get_option('contexto_options_data');
+	echo "<input id='contexto_options_apikey' name='contexto_options_data[contexto_options_apikey]' type='text' value='{$options['contexto_options_apikey']}' size='100'/>";
 
 
   echo "<p>In order to make this plugin work, you need to register in <a href='https://www.textrazor.com/' target='_blank'>TextRazor</a>. Then you will received a
@@ -24,12 +24,12 @@ function setting_apikey_callback() {
 
 // Function to display the Confidence input
 function setting_confidence_callback() {
-	$options = get_option('linked_options_data');
+	$options = get_option('contexto_options_data');
   for ($i=1; $i <= 10; $i++) {
-    if ($options['linked_options_confidence'] == $i) {
-      echo " <input type='radio' name='linked_options_data[linked_options_confidence]' value='{$i}' checked='checked'> {$i}";
+    if ($options['contexto_options_confidence'] == $i) {
+      echo " <input type='radio' name='contexto_options_data[contexto_options_confidence]' value='{$i}' checked='checked'> {$i}";
     } else {
-      echo " <input type='radio' name='linked_options_data[linked_options_confidence]' value='{$i}'> {$i}";
+      echo " <input type='radio' name='contexto_options_data[contexto_options_confidence]' value='{$i}'> {$i}";
     }
   }
   echo "<p>The confidence that TextRazor is correct that this is a valid entity. TextRazor uses an ever increasing number of signals to help spot valid entities, all of which contribute to this score.</p>
@@ -43,13 +43,13 @@ function setting_confidence_callback() {
 <!-- Html -->
 <div class="wrap">
   <h1><?= esc_html(get_admin_page_title()); ?></h1>
-  <h2>Documentation of Linked Plugin</h2>
+  <h2>Documentation of Contexto Plugin</h2>
   <form method="post" action="options.php">
   <?php
   // Output nonce, action, and option_page fields for a settings page. Must be inside of the form tag for the options page.
-  settings_fields( 'linked_options_menu' );
+  settings_fields( 'contexto_options_menu' );
   // Prints out all settings sections added to a particular settings page.
-  do_settings_sections('linked_options_menu');
+  do_settings_sections('contexto_options_menu');
   // output save settings button
   submit_button( 'Save Settings' );
   ?>
