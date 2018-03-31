@@ -17,7 +17,7 @@ function setting_apikey_callback() {
 	echo "<input id='contexto_options_apikey' name='contexto_options_data[contexto_options_apikey]' type='text' value='{$options['contexto_options_apikey']}' size='100'/>";
 
 
-  echo "<p>In order to make this plugin work, you need to register in <a href='https://www.textrazor.com/' target='_blank'>TextRazor</a>. Then you will received a
+  echo "<p>In order to make this plugin work, you need to register with <a href='https://www.textrazor.com/' target='_blank'>TextRazor</a>. Then you will receive a
   key by email. Place the API key below and save it.</p>";
 }
 

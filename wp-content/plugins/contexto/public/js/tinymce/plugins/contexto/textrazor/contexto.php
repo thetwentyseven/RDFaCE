@@ -4,6 +4,25 @@
 require_once('TextRazor.php');
 
 
+add_action('wp_ajax_loadingCall', 'loadingCall');
+function loadingCall(){
+  $highlight = $_GET['highlight'];
+  echo '<h1>Loading</h1>'; // <- this should be displayed in the TB
+  echo '<p>Searching <strong>'.$highlight.'</strong></p>';
+  die();
+}
+
+
+add_action('wp_ajax_nofoundCall', 'nofoundCall');
+function nofoundCall(){
+  $highlight = $_GET['highlight'];
+  echo '<h1>Sorry</h1>'; // <- this should be displayed in the TB
+  echo '<p>The word <strong>'.$highlight.'</strong> was not found.</p>';
+  echo 'Please if the word is in Wikidata and the word is not found, contact us.';
+  die();
+}
+
+
 // Handler function - More info: https://codex.wordpress.org/Plugin_API/Action_Reference/wp_ajax_(action)
 add_action( 'wp_ajax_send_text', 'send_text' );
 function send_text() {
@@ -111,8 +130,11 @@ function send_text() {
               $imageurl = plugins_url( 'contexto/public/images/image-not-available.jpg' );
             }
 
+            // Create an id with the matchedText removing all white spaces
+            $classText = str_replace(' ', '', $entity['matchedText']);
+
             // Replace the actual text from TinyMCE with those words found with TextRazor and make a link
-            $tinymce_after = str_replace($entity['matchedText'], "<span class='wpContextoToolTip tooltip-effect-1'><span class='wpContextoToolTipItem'>{$entity['matchedText']}</span><span class='wpContextoToolTipContent clearfix'><span class='wpContextoToolTipImage'><img src='{$imageurl}' class='wpContextoImages'></span><span class='wpContextoToolTipItemText'>{$description}<span class='wpContextoToolTipItemFooter'><span class='wpContextoToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpContextoToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
+            $tinymce_after = str_replace($entity['matchedText'], "<span class='wpContextoToolTip tooltip-effect-1' class='{$classText}'><span class='wpContextoToolTipItem'>{$entity['matchedText']}</span><span class='wpContextoToolTipContent clearfix'><span class='wpContextoToolTipImage'><img src='{$imageurl}' class='wpContextoImages'></span><span class='wpContextoToolTipItemText'>{$description}<span class='wpContextoToolTipItemFooter'><span class='wpContextoToolTipItemSource'>Source: <a target='_blank' href='https://www.wikidata.org/wiki/{$wikidataid}'>Wikidata</a></span> <span class='wpContextoToolTipItemConfidence'>Confidence: {$entity['confidenceScore']}</span></span></span></span></span>", $tinymce_before);
           } // if $request
 
         } // if $entity['confidenceScore']
