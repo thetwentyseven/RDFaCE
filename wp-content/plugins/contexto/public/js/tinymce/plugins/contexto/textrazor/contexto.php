@@ -4,8 +4,8 @@
 require_once('TextRazor.php');
 
 
-add_action('wp_ajax_loadingCall', 'loadingCall');
-function loadingCall(){
+add_action('wp_ajax_contexto_loadingCall', 'contexto_loadingCall');
+function contexto_loadingCall(){
   $highlight = $_GET['highlight'];
   echo '<h1>Loading</h1>'; // <- this should be displayed in the TB
   echo '<p>Searching <strong>'.$highlight.'</strong></p>';
@@ -13,8 +13,8 @@ function loadingCall(){
 }
 
 
-add_action('wp_ajax_nofoundCall', 'nofoundCall');
-function nofoundCall(){
+add_action('wp_ajax_contexto_nofoundCall', 'contexto_nofoundCall');
+function contexto_nofoundCall(){
   $highlight = $_GET['highlight'];
   echo '<h1>Sorry</h1>'; // <- this should be displayed in the TB
   echo '<p>The word <strong>'.$highlight.'</strong> was not found.</p>';
@@ -24,8 +24,8 @@ function nofoundCall(){
 
 
 // Handler function - More info: https://codex.wordpress.org/Plugin_API/Action_Reference/wp_ajax_(action)
-add_action( 'wp_ajax_send_text', 'send_text' );
-function send_text() {
+add_action( 'wp_ajax_contexto_send_text', 'contexto_send_text' );
+function contexto_send_text() {
   global $wpdb;
 
 
@@ -52,6 +52,9 @@ function send_text() {
 
   // Get highlight text by user
   $highlight = $_POST['highlight'];
+
+  // Get the images folder URL via AJAX - POST
+  $images_folder = $_POST['images_folder'];
 
   // Get the confident level from the user via AJAX - POST
   // The confidence that TextRazor is correct that this is a valid entity. TextRazor uses an ever increasing number of signals to help spot valid entities, all of which contribute to this score. These include the semantic agreement between the context in the source text and our knowledgebase, compatibility between other entities in the text, compatibility between the expected entity type and context, prior probabilities of having seen this entity across wikipedia and other web datasets. The score ranges from 0.5 to 10, with 10 representing the highest confidence that this is a valid entity - More info: https://www.textrazor.com/docs/php
@@ -127,7 +130,8 @@ function send_text() {
 
             // If the image is not available the user a default one
             if (empty($imageurl)) {
-              $imageurl = plugins_url( 'contexto/public/images/image-not-available.jpg' );
+              // $imageurl = plugins_url( '/public/images/image-not-available.jpg', __FILE__ );
+              $imageurl = "{$images_folder}image-not-available.jpg";
             }
 
             // Create an id with the matchedText removing all white spaces

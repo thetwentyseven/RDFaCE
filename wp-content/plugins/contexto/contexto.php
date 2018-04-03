@@ -39,11 +39,11 @@ function contexto_settings_init() {
    register_setting( 'contexto_options_menu', 'contexto_options_data' );
 
    // Register a group
-   add_settings_section( 'contexto_options_id', __( 'Configuration', 'contexto_options_menu' ), 'setting_section_callback', 'contexto_options_menu' );
+   add_settings_section( 'contexto_options_id', __( 'Configuration', 'contexto_options_menu' ), 'contexto_setting_section_callback', 'contexto_options_menu' );
 
    // Add fields
-   add_settings_field('contexto_options_apikey', __( 'API Key: ', 'contexto_options_menu' ), 'setting_apikey_callback', 'contexto_options_menu', 'contexto_options_id');
-   add_settings_field('contexto_options_confidence', __( 'Confidence: ', 'contexto_options_menu' ), 'setting_confidence_callback', 'contexto_options_menu', 'contexto_options_id');
+   add_settings_field('contexto_options_apikey', __( 'API Key: ', 'contexto_options_menu' ), 'contexto_setting_apikey_callback', 'contexto_options_menu', 'contexto_options_id');
+   add_settings_field('contexto_options_confidence', __( 'Confidence: ', 'contexto_options_menu' ), 'contexto_setting_confidence_callback', 'contexto_options_menu', 'contexto_options_id');
 
 }
 
@@ -116,10 +116,11 @@ function contexto_admin_enqueue() {
   wp_register_script( 'contexto-plugin-script', null);
   wp_enqueue_script( 'contexto-plugin-script');
 
-	// in JavaScript, object properties are accessed as ajax_object.ajax_url, ajax_object.we_value
-	wp_localize_script( 'contexto-plugin-script', 'ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ),
+	// in JavaScript, object properties are accessed as contexto_ajax_object.ajax_url, contexto_ajax_object.content...
+	wp_localize_script( 'contexto-plugin-script', 'contexto_ajax_object', array( 'ajax_url' => admin_url( 'admin-ajax.php' ),
                                                                     'content' => '',
-                                                                    'highlight' => '')
+                                                                    'highlight' => '',
+                                                                    'images_folder' => plugins_url( '/public/images/',__FILE__ ))
                                                                   );
 }
 

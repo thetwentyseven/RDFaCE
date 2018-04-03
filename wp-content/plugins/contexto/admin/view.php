@@ -1,7 +1,7 @@
 <?php
 
 // The first time the plugin initiate it create two options
-function setting_section_callback(){
+function contexto_setting_section_callback(){
 
   $default = array(
                     "contexto_options_apikey" => "6e3a64e825ce0eab61fe3801e190d41ea2794f345a61b4df315aa6b1",
@@ -12,7 +12,7 @@ function setting_section_callback(){
 }
 
 // Function to display the API input
-function setting_apikey_callback() {
+function contexto_setting_apikey_callback() {
 	$options = get_option('contexto_options_data');
 	echo "<input id='contexto_options_apikey' name='contexto_options_data[contexto_options_apikey]' type='text' value='{$options['contexto_options_apikey']}' size='100'/>";
 
@@ -23,7 +23,7 @@ function setting_apikey_callback() {
 
 
 // Function to display the Confidence input
-function setting_confidence_callback() {
+function contexto_setting_confidence_callback() {
 	$options = get_option('contexto_options_data');
   for ($i=1; $i <= 10; $i++) {
     if ($options['contexto_options_confidence'] == $i) {
