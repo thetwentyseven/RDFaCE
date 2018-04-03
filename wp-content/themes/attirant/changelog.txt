@@ -1,0 +1,32 @@
+Version 1.0.7.2
+
+	- Initial Release
+
+Version 1.1
+
+	- Screenshot Changed
+	- Default Title Color Changed
+
+Version 1.2
+
+	- Changed the color bug for site titles in post pages
+	- Updated Font Awesome and Bootstrap
+
+version 1.3
+
+	- Upgrade option added
+	- Minor bug fixes
+
+Version 1.4
+
+	- Update Font Awesome
+	- Fixed layout Bugs
+	- Other minor fixes
+
+Version 1.5
+	- Updated Bootstrap
+	- Fixed Layout Issues
+	
+Version 1.7.1
+
+	- Changed the Theme URI

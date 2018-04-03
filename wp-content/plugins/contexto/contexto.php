@@ -5,12 +5,12 @@
  */
 /*
 Plugin Name: Contexto
-Plugin URI: https://contexto.dot/
+Plugin URI: https://contexto.thetwentyseven.co.uk
 Description: This is a plugin to generate automatically linked connections with raw text from post and pages.
 Author: Adrian Vazquez
 Version: 1.0
 Author URI: https://thetwentyseven.co.uk/
-License:      GPL2
+License: GPL2
 License URI:  https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain:  contexto
 
