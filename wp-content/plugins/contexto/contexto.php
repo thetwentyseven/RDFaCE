@@ -6,7 +6,7 @@
 /*
 Plugin Name: Contexto
 Plugin URI: https://contexto.thetwentyseven.co.uk
-Description: This is a plugin to generate automatically linked connections with raw text from post and pages.
+Description: This is a plugin to generate automatically extra information to enrich your content.
 Author: Adrian Vazquez
 Version: 1.0
 Author URI: https://thetwentyseven.co.uk/
@@ -27,6 +27,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Contexto. If not, see https://www.gnu.org/licenses/gpl-2.0.html.
 */
+
 
 // Create global instances
 define( 'CONTEXTO_PLUGIN', __FILE__ );
@@ -93,6 +94,7 @@ function contexto_tinymce() {
     add_filter( 'mce_external_plugins', 'contexto_tinymce_plugin' );
     add_filter( 'mce_buttons', 'contexto_tinymce_button' );
 }
+
 
 // Include the JS for TinyMCE
 function contexto_tinymce_plugin( $plugin_array ) {
