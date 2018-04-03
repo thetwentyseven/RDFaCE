@@ -57,7 +57,7 @@ function contexto_options_admin_page(){
         'manage_options', // $capability
         'contexto_options_menu', // $menu_slug. The slug name to refer to this menu by. Should be unique for this menu page.
         'contexto_options_admin_page_content', // $function. The function to be called to output the content for this page
-        plugins_url( 'contexto/public/images/contexto-icon.png' ), // $icon_url
+        plugins_url( '/public/images/contexto-icon.png', __FILE__ ), // $icon_url
         30 // $position
     );
 }
@@ -126,8 +126,8 @@ function contexto_admin_enqueue() {
 
 // These files would be reflected within the TinyMCE visual editor
 // More info: https://developer.wordpress.org/reference/functions/add_editor_style/
-add_action( 'admin_init', 'wpdocs_theme_add_editor_styles' );
-function wpdocs_theme_add_editor_styles() {
+add_action( 'admin_init', 'contexto_add_editor_styles' );
+function contexto_add_editor_styles() {
     add_editor_style( plugins_url( '/public/css/style.css', __FILE__ )  );
 }
 
